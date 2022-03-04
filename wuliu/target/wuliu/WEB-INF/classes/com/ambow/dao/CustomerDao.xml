@@ -27,6 +27,9 @@
         SELECT
         customer_id,
         customer_name,
+        customer_no,
+        customer_sex,
+        customer_college,
         customer_tel,
         customer_username,
         customer_password
@@ -35,6 +38,12 @@
         WHERE 1 = 1
         <if test="customer_name != ''">
             and customer_name like concat('%',#{customer_name},'%')
+        </if>
+        <if test="customer_college != ''">
+            and customer_college like concat('%',#{customer_college},'%')
+        </if>
+        <if test="customer_no != ''">
+            and customer_no like concat('%',#{customer_no},'%')
         </if>
         order by customer_id desc
     </select>

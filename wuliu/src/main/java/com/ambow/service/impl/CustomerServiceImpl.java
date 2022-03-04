@@ -23,11 +23,11 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public List<Customer> findCustomerList(int currentPage, int pageSize, String customer_name) {
+    public List<Customer> findCustomerList(int currentPage, int pageSize, String customer_name, String customer_college, String customer_no) {
         // 启动分页
         PageHelper.startPage(currentPage, pageSize);
         // 返回所有查询到的信息
-        return customerDao.findCustomerList(customer_name);
+        return customerDao.findCustomerList(customer_name,customer_college,customer_no);
     }
 
     @Override

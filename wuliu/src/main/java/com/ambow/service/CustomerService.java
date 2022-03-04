@@ -23,7 +23,7 @@ public interface CustomerService {
      * @param customer_name 传入搜索名
      * @return 分页返回查询用户
      */
-    List<Customer> findCustomerList(int currentPage, int pageSize, String customer_name);
+    List<Customer> findCustomerList(int currentPage, int pageSize, String customer_name, String customer_college, String Customer_no);
 
     /**
      * 管理员增加用户

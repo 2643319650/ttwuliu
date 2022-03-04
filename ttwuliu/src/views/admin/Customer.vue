@@ -1,84 +1,150 @@
 <template>
-  <div style="padding: 10px">
-    <!-- 头信息 - 新增、搜索、批量操作 -->
-    <div>
-      <div style="float: left;margin: 10px">
-        <el-button type="success" round @click="open">新增客户</el-button>
-      </div>
-
-      <div style="margin-top: 10px; float: right;margin-right: 50px">
-        <el-input placeholder="请输入名称" v-model="search_customer_name" clearable style="width: 200px"></el-input>
-        <el-button type="primary" round style="margin-left: 5px" @click="load()">查询</el-button>
-      </div>
-
-    </div>
-    <!-- 表格 -->
-    <div style="margin-top: 10px">
-      <el-table
-        ref="multipleTable"
-        :data="tableData"
-        :cell-style="{textAlign:'center'}"
-        :header-cell-style="{textAlign:'center'}"
-        tooltip-effect="dark"
-        style="width: 100%"
-      >
-        <el-table-column prop="customer_id" label="id" v-if="isShow"></el-table-column>
-        <el-table-column prop="customer_name" label="客户名称"></el-table-column>
-        <el-table-column prop="customer_username" label="客户昵称"></el-table-column>
-        <el-table-column prop="customer_tel" label="客户电话"></el-table-column>
-
-        <el-table-column label="操作">
-          <template #default="scope">
-            <el-button size="mini" type="primary" icon="el-icon-edit"
-                       @click="findCustomerById(scope.row.customer_id)">
-              编辑
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <!-- 分页 -->
-    <div style="margin-top: 10px">
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="currentPage"
-        :page-sizes="[5, 10, 15]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total">
-      </el-pagination>
-    </div>
-    <!-- 弹窗 -->
-    <div>
-      <el-dialog title="编辑客户" v-model="dialogVisible" width="35%">
-        <div style="width: 350px;margin-left: 40px">
-          <el-form :label-position="labelPosition" label-width="80px" :model="customer_form">
-            <el-form-item label="客户姓名">
-              <el-input v-model="customer_form.customer_name"></el-input>
-            </el-form-item>
-            <el-form-item label="客户电话">
-              <el-input v-model="customer_form.customer_tel"></el-input>
-            </el-form-item>
-            <el-form-item label="用户名">
-              <el-input v-model="customer_form.customer_username"></el-input>
-            </el-form-item>
-            <el-form-item label="登录密码">
-              <el-input type="password" v-model="customer_form.customer_password"></el-input>
-            </el-form-item>
-          </el-form>
+  <main class="el-main">
+    <div style="width: 100%;">
+      <!--辅导员管理页的搜索区域-->
+      <div class="el-row" style="border-bottom: 2px solid rgb(95, 139, 198);">
+        <div class="teacher-search-header" style="float: right">
+          <form class="el-form">
+            <!-- 辅导员姓名-->
+            <div class="el-col el-col-8">
+              <div class="el-form-item">
+                <label class="el-form-item__label" style="width: 100px;">
+                  辅导员姓名</label>
+                <div class="el-form-item__content" style="margin-left: 20px;">
+                  <div class="el-input el-input--suffix" style="width: 273px;"><!---->
+                    <input type="text" v-model="search_customer_name" autocomplete="off" placeholder="请输入辅导员姓名" class="el-input__inner"><!----><!----><!----><!---->
+                  </div><!---->
+                </div>
+              </div>
+            </div>
+            <!-- 辅导员学院-->
+            <div class="el-col el-col-8">
+              <div class="el-form-item">
+                <label class="el-form-item__label" style="width: 100px; margin-left: 130px;">学院</label>
+                <div class="el-form-item__content" style="margin-left: 20px;">
+                  <div class="el-input el-input--suffix" style="width: 273px;"><!---->
+                    <input type="text" v-model="search_customer_college" autocomplete="off" placeholder="请输入辅导员学院" class="el-input__inner"><!----><!----><!----><!---->
+                  </div><!---->
+                </div>
+              </div>
+            </div>
+            <!-- 辅导员工号-->
+            <div class="el-col el-col-8">
+              <div class="el-form-item">
+                <label class="el-form-item__label" style="width: 100px;margin-left: 130px;">工号</label>
+                <div class="el-form-item__content" style="margin-left: 20px;">
+                  <div class="el-input el-input--suffix" style="width: 274px;"><!---->
+                    <input type="number" v-model="search_customer_no" autocomplete="off" placeholder="请输入辅导员工号" class="el-input__inner"><!----><!----><!----><!---->
+                  </div><!---->
+                </div>
+              </div>
+            </div>
+          </form>
+          <!--重置/搜索按钮-->
+          <span class="teacher-search-operation" style="float: right;padding-inline: 10px">
+            <button type="button" class="el-button el-button--default" @click="clear"><!---->
+              <i class="el-icon-remove-outline"></i>
+              <span>Clear</span></button>
+            <button type="button" class="el-button el-button--primary" @click="load()"><!---->
+              <i class="el-icon-search"></i>
+              <span>Search</span>
+            </button>
+          </span>
         </div>
-        <template #footer>
-    <span class="dialog-footer">
-      <el-button @click="dialogVisible = false">取 消</el-button>
+      </div>
+<!--      搜索下面的新增按钮-->
+      <div class="table-header">
+        <span class="teacher-new-operation" >
+          <button type="button" class="el-button el-button--primary" @click="open">
+            <i class="el-icon-circle-plus-outline"></i>
+            <span>New</span>
+          </button>
+        </span>
+      </div>
 
-      <el-button type="primary" @click="saveCustomer" v-if="customer_form.customer_id == null">增加客户</el-button>
-      <el-button type="primary" @click="updateCustomer" v-if="customer_form.customer_id != null">>修改客户</el-button>
-    </span>
-        </template>
-      </el-dialog>
+<!--      主体-->
+      <div style="margin-top: 10px">
+        <el-table
+            ref="multipleTable"
+            :data="tableData"
+            stripe
+            :cell-style="{textAlign:'center'}"
+            :header-cell-style="{textAlign:'center'}"
+            tooltip-effect="dark"
+            style="width: 100%"
+        >
+          <el-table-column prop="customer_id" label="id" v-if="isShow"></el-table-column>
+          <el-table-column prop="customer_name" label="姓名"></el-table-column>
+          <el-table-column prop="customer_no" label="工号"></el-table-column>
+          <el-table-column prop="customer_sex" label="性别"></el-table-column>
+          <el-table-column prop="customer_college" label="学院"></el-table-column>
+          <el-table-column prop="customer_tel" label="电话"></el-table-column>
+          <el-table-column prop="customer_username" label="账号"></el-table-column>
+
+          <el-table-column label="操作">
+            <template #default="scope">
+              <el-button size="mini" type="primary" icon="el-icon-edit"
+                         @click="findCustomerById(scope.row.customer_id)">
+                Edit
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+
+<!--      分页-->
+      <div style="margin-top: 10px">
+        <el-pagination
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            :current-page="currentPage"
+            :page-sizes="[5, 10, 15]"
+            :page-size="pageSize"
+            layout="total, sizes, prev, pager, next, jumper"
+            :total="total">
+        </el-pagination>
+      </div>
+
+<!--      编辑辅导员弹窗-->
+      <div>
+        <el-dialog title="辅导员信息" v-model="dialogVisible" width="35%">
+          <div style="width: 350px;margin-left: 40px">
+            <el-form :label-position="labelPosition" label-width="80px" :model="customer_form">
+              <el-form-item label="姓名">
+                <el-input v-model="customer_form.customer_name"></el-input>
+              </el-form-item>
+              <el-form-item label="工号">
+                <el-input v-model="customer_form.customer_no"></el-input>
+              </el-form-item>
+              <el-form-item label="性别">
+                <el-input v-model="customer_form.customer_sex"></el-input>
+              </el-form-item>
+              <el-form-item label="学院">
+                <el-input v-model="customer_form.customer_college"></el-input>
+              </el-form-item>
+              <el-form-item label="电话">
+                <el-input v-model="customer_form.customer_tel"></el-input>
+              </el-form-item>
+              <el-form-item label="用户名">
+                <el-input v-model="customer_form.customer_username"></el-input>
+              </el-form-item>
+              <el-form-item label="登录密码">
+                <el-input type="password" v-model="customer_form.customer_password"></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+          <template #footer>
+            <span class="dialog-footer">
+              <el-button @click="dialogVisible = false">取 消</el-button>
+              <el-button type="primary" @click="saveCustomer" v-if="customer_form.customer_id == null">确认</el-button>
+              <el-button type="primary" @click="updateCustomer" v-if="customer_form.customer_id != null">保存</el-button>
+            </span>
+          </template>
+        </el-dialog>
+      </div>
+
     </div>
-  </div>
+  </main>
 </template>
 
 <script>
@@ -95,6 +161,8 @@
         dialogVisible: false,
         //快捷查询的名称
         search_customer_name: '',
+        search_customer_college:'',
+        search_customer_no:'',
         //当前页数
         currentPage: 1,
         //每页大小
@@ -110,11 +178,19 @@
       }
     },
     methods: {
+      //清空筛选条件
+      clear(){
+        this.search_customer_college = ''
+        this.search_customer_name = ''
+        this.search_customer_no = ''
+      },
       //读取列表数据
       load() {
         request.get('/api/CustomerController/findCustomerList', {
           params: {
             customer_name: this.search_customer_name,
+            customer_college: this.search_customer_college,
+            customer_no:this.search_customer_no,
             currentPage: this.currentPage,
             pageSize: this.pageSize
           }
@@ -230,5 +306,11 @@
 </script>
 
 <style scoped>
-
+.el-main{
+  padding-bottom: 0;
+}
+.teacher-new-operation{
+  float: right;
+  padding-top: 10px;
+}
 </style>

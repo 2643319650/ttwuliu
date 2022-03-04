@@ -50,9 +50,11 @@ public class CustomerController {
     public Result findCustomerList(
             @RequestParam(value = "currentPage", defaultValue = "1") int currentPage,
             @RequestParam(value = "pageSize", defaultValue = "6") int pageSize,
-            @RequestParam(value = "customer_name", defaultValue = "") String customer_name) {
+            @RequestParam(value = "customer_name", defaultValue = "") String customer_name,
+            @RequestParam(value = "customer_college", defaultValue = "") String customer_college,
+            @RequestParam(value = "customer_no", defaultValue = "") String customer_no){
 
-        List<Customer> customerList = customerService.findCustomerList(currentPage, pageSize, customer_name);
+        List<Customer> customerList = customerService.findCustomerList(currentPage, pageSize, customer_name, customer_college, customer_no);
         //分页对象
         PageInfo pageInfo = new PageInfo(customerList);
 

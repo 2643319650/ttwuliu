@@ -22,7 +22,7 @@ public interface CustomerDao {
      * @param customer_name
      * @return
      */
-    List<Customer> findCustomerList(String customer_name);
+    List<Customer> findCustomerList(String customer_name,String customer_college, String customer_no);
 
     /**
      * 保存客户
